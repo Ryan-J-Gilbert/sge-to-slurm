@@ -1,0 +1,32 @@
+# Example site configuration for sge-to-slurm (YAML).
+# Copy and pass with: sge-to-slurm job.sh --config my-site.yaml
+
+# Map SGE -P project to Slurm --account=
+account:
+  my_project: "my_slurm_account"
+
+# Map SGE -q queue names to Slurm --partition=
+# Use "regex:PATTERN" as key for pattern matching against the queue name.
+partitions:
+  short: "short"
+  "regex:.*mpi.*": "mpi"
+
+# Map -pe <name> <slots> to Slurm resource layout.
+parallel_environments:
+  omp:
+    type: openmp
+  mpi_28_tasks_per_node:
+    type: mpi_slots
+    tasks_per_node: 28
+
+# Override or extend -l complex handling (built-ins include h_rt, mem_per_core, mem_free, h_vmem).
+resource_complexes:
+  gpu_c:
+    slurm_flag: gres
+    transform: identity
+
+# Optional #SBATCH lines: prepend after shebang, or append before merged script body.
+defaults:
+  prepend: []
+  append:
+    - "--nodes=1"
