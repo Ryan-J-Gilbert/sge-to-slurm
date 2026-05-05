@@ -1,0 +1,59 @@
+# SCC-oriented site configuration for sge-to-slurm.
+# Use with:
+#   sge-to-slurm job.sh --config sge_to_slurm.scc.yaml
+#
+# Notes:
+# - Update account and partition values for your SCC projects/queues.
+# - GPU-related -l mappings are included explicitly to cover SCC examples.
+
+account:
+  my_project: "my_slurm_account"
+
+partitions:
+  short: "short"
+  "regex:.*mpi.*": "mpi"
+  "regex:.*buyin.*": "buyin"
+
+parallel_environments:
+  # SCC docs commonly use omp for single-node threaded jobs.
+  omp:
+    type: openmp
+
+  # Common SCC MPI PE families.
+  mpi_16_tasks_per_node:
+    type: mpi_slots
+    tasks_per_node: 16
+  mpi_28_tasks_per_node:
+    type: mpi_slots
+    tasks_per_node: 28
+  mpi_36_tasks_per_node:
+    type: mpi_slots
+    tasks_per_node: 36
+
+resource_complexes:
+  # Built-ins already cover h_rt and mem_per_core; listed here for clarity.
+  h_rt:
+    slurm_flag: time
+    transform: identity
+  mem_per_core:
+    slurm_flag: mem-per-cpu
+    transform: identity
+
+  # SCC GPU request keys from references:
+  #   -l gpus=<count>
+  #   -l gpu_c=<compute capability>
+  #   -l gpu_type=<gpu model/type>
+  gpus:
+    slurm_flag: gpus
+    transform: identity
+  gpu_c:
+    slurm_flag: constraint
+    transform: identity
+  gpu_type:
+    slurm_flag: constraint
+    transform: identity
+
+defaults:
+  prepend: []
+  append:
+    - "--nodes=1"
