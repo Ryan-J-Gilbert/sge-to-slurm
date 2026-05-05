@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 from typing import Annotated
@@ -18,6 +19,16 @@ app = typer.Typer(
     no_args_is_help=True,
     help="Convert Sun Grid Engine (qsub) batch scripts to Slurm (sbatch) scripts.",
 )
+
+
+def _resolve_config_path(config: Path | None) -> Path | None:
+    """Resolve config path with CLI arg first, then module/env defaults."""
+    if config is not None:
+        return config
+    env_cfg = os.getenv("SGE_TO_SLURM_CONFIG")
+    if env_cfg:
+        return Path(env_cfg)
+    return None
 
 
 @app.command("convert")
@@ -67,7 +78,7 @@ def convert_cmd(
     out_path = output if output is not None else default_output_path(input_path)
 
     try:
-        cfg = load_config(config)
+        cfg = load_config(_resolve_config_path(config))
     except (OSError, ValueError) as e:
         err_console.print(f"[red]Config error:[/red] {e}")
         raise typer.Exit(code=2) from e

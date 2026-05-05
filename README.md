@@ -45,7 +45,7 @@ uv run sge-to-slurm path/to/job.sh --no-write
 
 ## Installation
 
-**SCC shared module (`sgeconvert`):** use the scripted layout under [`module_installation/`](module_installation/README.md) (clone, venv, `install/bin/sge-to-slurm`, and `modulefile.lua`). When you cut a new release, bump the version consistently in `pyproject.toml`, `src/sge_to_slurm/__init__.py` (`__version__`), and `module_installation/modulefile.lua` (help text / module version).
+**SCC shared module (`sgeconvert`):** use the scripted layout under [`module_installation/`](module_installation/README.md) (clone, venv, `install/bin/sge-to-slurm`, `modulefile.lua`, and default `sge_to_slurm.scc.yaml`). When you cut a new release, bump the version consistently in `pyproject.toml`, `src/sge_to_slurm/__init__.py` (`__version__`), and `module_installation/modulefile.lua` (help text / module version).
 
 ### Recommended: uv (local virtual environment)
 

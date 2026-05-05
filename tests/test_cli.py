@@ -100,3 +100,29 @@ def test_cli_explicit_convert(tmp_path, cfg_file):
         ["convert", str(inp), "--config", str(cfg_file), "--quiet", "--no-write"],
     )
     assert result.exit_code == 0
+
+
+def test_cli_uses_env_default_config(tmp_path, monkeypatch):
+    runner = CliRunner()
+    inp = tmp_path / "job.sh"
+    inp.write_text(FIXTURES.joinpath("basic.sh").read_text(encoding="utf-8"), encoding="utf-8")
+    env_cfg = tmp_path / "env.yaml"
+    env_cfg.write_text("account:\n  my_project: acct_from_env\n", encoding="utf-8")
+    monkeypatch.setenv("SGE_TO_SLURM_CONFIG", str(env_cfg))
+
+    result = runner.invoke(app, ["convert", str(inp), "--quiet", "--no-write"])
+    assert result.exit_code == 0
+
+
+def test_cli_explicit_config_overrides_env_default(tmp_path, monkeypatch):
+    runner = CliRunner()
+    inp = tmp_path / "job.sh"
+    inp.write_text(FIXTURES.joinpath("basic.sh").read_text(encoding="utf-8"), encoding="utf-8")
+    env_cfg = tmp_path / "env.yaml"
+    env_cfg.write_text("account:\n  my_project: acct_from_env\n", encoding="utf-8")
+    bad_cfg = tmp_path / "bad.unsupported"
+    bad_cfg.write_text("not used", encoding="utf-8")
+    monkeypatch.setenv("SGE_TO_SLURM_CONFIG", str(bad_cfg))
+
+    result = runner.invoke(app, ["convert", str(inp), "--config", str(env_cfg), "--quiet", "--no-write"])
+    assert result.exit_code == 0

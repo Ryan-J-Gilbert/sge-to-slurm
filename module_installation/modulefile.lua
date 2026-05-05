@@ -23,6 +23,7 @@ whatis("Description:  CLI tool to convert SGE to SLURM")
 -- base is the SCC_SGECONVERT_BASE location
 local base = pathJoin("/share/pkg.8",myModuleName(),myModuleVersion())
 setenv("SCC_SGECONVERT_BASE",      base)
+setenv("SGE_TO_SLURM_CONFIG",      pathJoin(base,"sge_to_slurm.scc.yaml"))
 -- now append /install for consistency with past modulefiles 
 base = pathJoin(base,"install")
 

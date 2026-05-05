@@ -26,6 +26,8 @@ INSTALL_ROOT="${PKG_ROOT}/install"
 VENV_DIR="${INSTALL_ROOT}/.venv"
 BIN_DIR="${INSTALL_ROOT}/bin"
 MODULEFILE_DST="${PKG_ROOT}/modulefile.lua"
+SCC_CONFIG_SRC="${CLONE_DIR}/sge_to_slurm.scc.yaml"
+SCC_CONFIG_DST="${PKG_ROOT}/sge_to_slurm.scc.yaml"
 
 log() { printf '%s\n' "$*"; }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
@@ -102,6 +104,13 @@ if [[ -f "${MODULEFILE_SRC}" ]]; then
   log "Installed modulefile template: ${MODULEFILE_DST}"
 else
   log "WARN: module template missing, skipped copy: ${MODULEFILE_SRC}"
+fi
+
+if [[ -f "${SCC_CONFIG_SRC}" ]]; then
+  cp -f "${SCC_CONFIG_SRC}" "${SCC_CONFIG_DST}"
+  log "Installed SCC default config: ${SCC_CONFIG_DST}"
+else
+  log "WARN: SCC default config missing, skipped copy: ${SCC_CONFIG_SRC}"
 fi
 
 if [[ -n "${SCC_SGECONVERT_VERSION:-}" ]]; then

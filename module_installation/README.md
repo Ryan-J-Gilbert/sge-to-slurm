@@ -12,8 +12,10 @@ From the package version directory (example: `/share/pkg.8/sgeconvert/0.1.0/`):
 | `install/.venv/` | Dedicated virtualenv with runtime dependencies |
 | `install/bin/sge-to-slurm` | Wrapper that runs the venv CLI (on `PATH` when the module loads) |
 | `modulefile.lua` | Copy of `module_installation/modulefile.lua` for that version (edit version strings before release) |
+| `sge_to_slurm.scc.yaml` | SCC default mapping config copied from the repo root |
 
 The Lua modulefile sets `SCC_SGECONVERT_*` and prepends `install/bin` to `PATH`, matching the paths above.
+It also sets `SGE_TO_SLURM_CONFIG=$SCC_SGECONVERT_BASE/sge_to_slurm.scc.yaml`, so `sge-to-slurm` uses that config by default when `--config` is omitted.
 
 The installer also creates a symlink **`/share/module.8/utilities/sgeconvert/{version}.lua`** → **`modulefile.lua`** when that utilities directory exists and is writable. Here `{version}` is the last path component of your package directory (for example `1.0` when you run the script from `/share/pkg.8/sgeconvert/1.0`), or the value of `SCC_SGECONVERT_VERSION` if you set it. That matches a manual:
 
@@ -81,7 +83,8 @@ Replace `<new-version>` with the directory name you chose (it should match what 
 3. Creates `install/.venv` if missing, then `pip install --upgrade` the clone (installs the `sge-to-slurm` console script into the venv).
 4. Writes `install/bin/sge-to-slurm` as a small `exec` wrapper around `.venv/bin/sge-to-slurm` (so users do not rely on activating the venv).
 5. Copies `module_installation/modulefile.lua` **from the checked-out clone** to `modulefile.lua` next to `install/` (so the template matches the deployed Git revision).
-6. Symlinks **`utilities_dir/{version}.lua`** → **`modulefile.lua`** (absolute target), with `{version}` from `SCC_SGECONVERT_VERSION` or the basename of the package directory. Requires step 5 to have produced `modulefile.lua` and the utilities directory to exist and be writable (otherwise the script prints the exact `ln -sf` to run by hand).
+6. Copies `sge_to_slurm.scc.yaml` from the checked-out clone to the package root as the module default config.
+7. Symlinks **`utilities_dir/{version}.lua`** → **`modulefile.lua`** (absolute target), with `{version}` from `SCC_SGECONVERT_VERSION` or the basename of the package directory. Requires step 5 to have produced `modulefile.lua` and the utilities directory to exist and be writable (otherwise the script prints the exact `ln -sf` to run by hand).
 
 ## Version bumps when releasing
 
