@@ -7,5 +7,8 @@
 #SBATCH --mail-user=user@example.com
 #SBATCH --output=out.log
 #SBATCH --error=out.log
+#SBATCH --gpus=2
+#SBATCH --constraint=7.0
+#SBATCH --constraint=L40s
 
 echo "job ${SLURM_JOB_ID} task ${SLURM_ARRAY_TASK_ID}"
