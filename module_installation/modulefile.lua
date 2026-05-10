@@ -1,6 +1,6 @@
 
 help([[
-sgeconvert 0.1.0: CLI tool to convert SGE to SLURM
+sgeconvert 0.2.0: CLI tool to convert SGE to SLURM
 
 The following environment variables are provided for convenience:
 $SCC_SCC_SGECONVERT_BASE -- Package Base Directory
